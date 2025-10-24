@@ -120,8 +120,9 @@ export const useMinimalAvatar = () => {
       });
 
       // Configure avatar session for language learning
+      // Using Low quality to prioritize audio/microphone performance over video quality
       await avatarRef.current.createStartAvatar({
-        quality: AvatarQuality.High,
+        quality: AvatarQuality.Low,
         avatarName: "Alessandra_ProfessionalLook2_public",
         knowledgeId: "97de19b2f1454591aa01b3cc148c520b",
         voice: {
