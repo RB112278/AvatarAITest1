@@ -137,9 +137,7 @@ export const useMinimalAvatar = () => {
 
       // Start voice chat (unmuted by default for language practice)
       console.log("Starting voice chat...");
-      await avatarRef.current.startVoiceChat({
-        isInputAudioMuted: false,
-      });
+      await avatarRef.current.startVoiceChat();
 
       console.log("Avatar session started successfully");
       console.log("Voice chat active - microphone should be listening");
