@@ -19,8 +19,27 @@ export const MinimalVoiceAvatar: React.FC = () => {
   const { videoRef, isConnecting, isConnected, error, startSession, stopSession, avatarRef } =
     useMinimalAvatar();
 
+  const [micPermission, setMicPermission] = React.useState<string>("checking");
+
+  // Check microphone permission
+  useEffect(() => {
+    const checkMicPermission = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        setMicPermission("granted");
+      } catch (err) {
+        console.error("Microphone permission denied:", err);
+        setMicPermission("denied");
+      }
+    };
+
+    checkMicPermission();
+  }, []);
+
   // Auto-start session when component mounts (only once)
   useEffect(() => {
+    if (micPermission !== "granted") return;
+
     // Add click listener to handle autoplay policy
     const handleInteraction = () => {
       if (videoRef.current && videoRef.current.paused) {
@@ -34,7 +53,7 @@ export const MinimalVoiceAvatar: React.FC = () => {
 
     startSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array = run only once on mount
+  }, [micPermission]); // Only start when mic permission is granted
 
   // Send greeting when avatar connects
   useEffect(() => {
@@ -64,8 +83,26 @@ export const MinimalVoiceAvatar: React.FC = () => {
           <track kind="captions" />
         </video>
 
+        {/* Microphone Permission Check */}
+        {micPermission === "checking" && (
+          <div style={styles.overlay}>
+            <div style={styles.statusText}>Checking microphone permission...</div>
+          </div>
+        )}
+
+        {micPermission === "denied" && (
+          <div style={styles.overlay}>
+            <div style={styles.statusText}>
+              Microphone access required
+              <div style={{ fontSize: "14px", marginTop: "10px", opacity: 0.8 }}>
+                Please allow microphone access and refresh the page
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Connection Status Overlay */}
-        {isConnecting && (
+        {isConnecting && micPermission === "granted" && (
           <div style={styles.overlay}>
             <div style={styles.statusText}>Connecting...</div>
           </div>
