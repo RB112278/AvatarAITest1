@@ -21,6 +21,17 @@ export const MinimalVoiceAvatar: React.FC = () => {
 
   // Auto-start session when component mounts (only once)
   useEffect(() => {
+    // Add click listener to handle autoplay policy
+    const handleInteraction = () => {
+      if (videoRef.current && videoRef.current.paused) {
+        videoRef.current.play().catch(err => {
+          console.log("Video play failed:", err);
+        });
+      }
+    };
+
+    document.addEventListener('click', handleInteraction, { once: true });
+
     startSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array = run only once on mount
