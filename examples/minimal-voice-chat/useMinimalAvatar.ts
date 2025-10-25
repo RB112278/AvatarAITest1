@@ -138,7 +138,15 @@ export const useMinimalAvatar = () => {
 
       // Start voice chat (unmuted by default for language practice)
       console.log("Starting voice chat...");
-      await avatarRef.current.startVoiceChat();
+      console.log("About to call startVoiceChat() - Railway debug");
+
+      try {
+        await avatarRef.current.startVoiceChat();
+        console.log("startVoiceChat() completed successfully - Railway debug");
+      } catch (voiceChatErr) {
+        console.error("Error in startVoiceChat():", voiceChatErr);
+        throw voiceChatErr;
+      }
 
       console.log("Avatar session started successfully");
       console.log("Voice chat active - microphone should be listening");
